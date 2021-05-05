@@ -1,25 +1,32 @@
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
 
-require('dotenv').config();
+require("dotenv").config();
 
 const app = express();
-const port =  process.env.PORT || 3001;
+const port = process.env.PORT;
 
 const uri = process.env.ATLAS_URI;
 
-const connect = mongoose.connect(uri,{useNewUrlParser:true,useCreateIndex:true,useUnifiedTopology:true});
+const connect = mongoose.connect(uri, {
+	useNewUrlParser: true,
+	useCreateIndex: true,
+	useUnifiedTopology: true,
+});
 
-connect.then((db) => {
-    console.log('MongoDB connected');
-},(err) => {
-    console.log(err);
-})
+connect.then(
+	(db) => {
+		console.log("MongoDB connected");
+	},
+	(err) => {
+		console.log(err);
+	}
+);
 
 app.use(cors());
 app.use(express.json());
 
-app.listen(port , () =>{
-    console.log(`Server is running on ${port}`);
-})
+app.listen(port, () => {
+	console.log(`Server is running on ${port}`);
+});
