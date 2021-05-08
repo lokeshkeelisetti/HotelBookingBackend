@@ -10,7 +10,7 @@ const Receptionist = new Schema({
     type:String,
     default:''
   },
-  hotel:hotel,
+  hotel:Hotel,
 },{
   timestamps:true
 })
