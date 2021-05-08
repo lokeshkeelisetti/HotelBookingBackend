@@ -6,6 +6,10 @@ const hotel = new Schema({
     type:String,
     required: true
   },
+  address:{
+    type:String,
+    required: true
+  },
   rooms: [hotel_room]
 },{
   timestamps: true
