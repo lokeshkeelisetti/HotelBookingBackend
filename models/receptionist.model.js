@@ -1,16 +1,25 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const Receptionist = new Schema({
-  firstName:{
-    type:String,
-    required:true
-  },
-  lastName:{
-    type:String,
-    default:''
-  },
-  hotel:hotel,
-},{
-  timestamps:true
-})
+const receptionist = new Schema(
+	{
+		name: {
+			firstName: {
+				type: String,
+				required: true,
+			},
+			lastName: {
+				type: String,
+				default: "",
+			},
+		},
+		hotel: mongoose.Schema.Types.ObjectId,
+	},
+	{
+		timestamps: true,
+	}
+);
+
+const Receptionist = model("Receptionist", receptionist);
+
+module.exports = Receptionist;
