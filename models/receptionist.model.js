@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const receptionist = new Schema(
+const receptionistSchema = new Schema(
 	{
 		name: {
 			firstName: {
@@ -30,6 +30,6 @@ const receptionist = new Schema(
 	}
 );
 
-const Receptionist = model("Receptionist", receptionist);
+const Receptionist = model("Receptionist", receptionistSchema);
 
 module.exports = Receptionist;

@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const maintainer = new Schema(
+const maintainerSchema = new Schema(
 	{
 		name: {
 			firstName: {
@@ -26,6 +26,6 @@ const maintainer = new Schema(
 	}
 );
 
-const Maintainer = model("Maintainer", maintainer);
+const Maintainer = model("Maintainer", maintainerSchema);
 
 module.exports = Maintainer;

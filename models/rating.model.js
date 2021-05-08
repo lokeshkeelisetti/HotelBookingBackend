@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const rating = new Schema(
+const ratingSchema = new Schema(
 	{
 		rating_value: {
 			type: Number,
@@ -24,6 +24,6 @@ const rating = new Schema(
 	}
 );
 
-const Rating = model("Rating", rating);
+const Rating = model("Rating", ratingSchema);
 
 module.exports = Rating;

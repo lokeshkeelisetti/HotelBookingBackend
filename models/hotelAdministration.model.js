@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const hotelAdministration = new Schema(
+const hotelAdministrationSchema = new Schema(
 	{
 		name: {
 			firstName: {
@@ -30,6 +30,6 @@ const hotelAdministration = new Schema(
 	}
 );
 
-const HotelAdministration = model("HotelAdministration", hotelAdministration);
+const HotelAdministration = model("HotelAdministration", hotelAdministrationSchema);
 
 module.exports = HotelAdministration;

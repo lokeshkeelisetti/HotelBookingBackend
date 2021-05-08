@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const customer = new Schema(
+const customerSchema = new Schema(
 	{
 		name: {
 			firstName: {
@@ -28,6 +28,6 @@ const customer = new Schema(
 	}
 );
 
-const Customer = model("Customer", customer);
+const Customer = model("Customer", customerSchema);
 
 module.exports = Customer;
