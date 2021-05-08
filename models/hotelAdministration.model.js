@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const receptionist = new Schema(
+const hotelAdministration = new Schema(
 	{
 		name: {
 			firstName: {
@@ -31,6 +31,6 @@ const receptionist = new Schema(
 	}
 );
 
-const Receptionist = model("Receptionist", receptionist);
+const HotelAdministration = model("HotelAdministration", hotelAdministration);
 
-module.exports = Receptionist;
+module.exports = HotelAdministration;

@@ -3,16 +3,26 @@ const Schema = mongoose.Schema;
 
 const customer = new Schema(
 	{
-		firstName: {
+		name: {
+			firstName: {
+				type: String,
+				required: true,
+			},
+			lastName: {
+				type: String,
+				default: "",
+			},
+		},
+		email: {
 			type: String,
 			required: true,
 		},
-		lastName: {
+		password: {
 			type: String,
-			default: "",
+			required: true,
 		},
-		previousBookings: [booking],
-		upcomingBookings: [booking],
+		previous_bookings: [String],
+		upcoming_bookings: [String],
 	},
 	{
 		timestamps: true,

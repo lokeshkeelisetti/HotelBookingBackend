@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const booking = new Schema(
 	{
-		customer_id: {
+		customer: {
 			type: String,
 			required: true,
 		},
@@ -11,7 +11,7 @@ const booking = new Schema(
 			type: String,
 			required: true,
 		},
-		hotel_id: {
+		hotel: {
 			type: String,
 			required: true,
 		},

@@ -1,13 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const rating = new Schema(
+const hotelRoom = new Schema(
 	{
-		rating_value: {
-			type: Number,
-			required: true,
-		},
-		customer: {
+		room_no: {
 			type: String,
 			required: true,
 		},
@@ -15,9 +11,13 @@ const rating = new Schema(
 			type: String,
 			required: true,
 		},
-		comment: {
+		type: {
 			type: String,
-			default: "",
+			required: true,
+		},
+		status: {
+			type: Number,
+			required: true,
 		},
 	},
 	{
@@ -25,6 +25,6 @@ const rating = new Schema(
 	}
 );
 
-const Rating = model("Rating", rating);
+const HotelRoom = model("HotelRoom", hotelRoom);
 
-module.exports = Rating;
+module.exports = HotelRoom;

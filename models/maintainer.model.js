@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const receptionist = new Schema(
+const maintainer = new Schema(
 	{
 		name: {
 			firstName: {
@@ -21,16 +21,12 @@ const receptionist = new Schema(
 			type: String,
 			required: true,
 		},
-		hotel: {
-			type: String,
-			required: true,
-		},
 	},
 	{
 		timestamps: true,
 	}
 );
 
-const Receptionist = model("Receptionist", receptionist);
+const Maintainer = model("Maintainer", maintainer);
 
-module.exports = Receptionist;
+module.exports = Maintainer;
