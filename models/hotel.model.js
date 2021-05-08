@@ -7,8 +7,9 @@ const hotel = new Schema({
     required: true
   },
   address:{
-    type:String,
-    required: true
+    street: String,
+    city: String,
+    zip:Number
   },
   rooms: [hotel_room]
 },{
