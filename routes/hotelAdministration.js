@@ -58,6 +58,7 @@ router.route("/removeReceptionist/:id").delete((req, res) => {
 router.route("/updateFacilities/:id").put((req, res) => {
 	HotelRoomType.findById(req.params.id)
 		.then((hotelRoomType) => {
+			hotelRoomType.type = req.body.type;
 			hotelRoomType.price = req.body.price;
 			hotelRoomType.facilities.ac_or_not = req.body.ac_or_not;
 			hotelRoomType.facilities.wifi_or_not = req.body.wifi_or_not;
@@ -80,6 +81,18 @@ router.route("/removeRoom/:id").delete((req, res) => {
 	HotelRoom.findByIdAndDelete(req.params.id)
 		.then(() => res.json("Removed room successfully"))
 		.catch((err) => res.status(400).json({ failure: "Unable to remove room please try again", error: err }));
+});
+
+
+
+	const newReceptionist = new Receptionist(receptionist);
+
+	newReceptionist
+		.save()
+		.then(() => res.json({ success: "Receptionist added successfully" }))
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to add receptionist", error: err })
+		);
 });
 
 module.exports = router;
