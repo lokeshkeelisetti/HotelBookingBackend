@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const hotelSchema = new Schema(
 	{
-		hotel_name: {
+		hotelName: {
 			type: String,
 			required: true,
 		},
@@ -20,8 +20,8 @@ const hotelSchema = new Schema(
 				required: true,
 			},
 		},
-		rooms: [String],
-		imgURL: [String],
+		roomIds: [String],
+		imgURLs: [String],
 	},
 	{
 		timestamps: true,

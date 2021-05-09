@@ -20,8 +20,8 @@ const customerSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		previous_bookings: [String],
-		upcoming_bookings: [String],
+		previousBookingIds: [String],
+		upcomingBookingIds: [String],
 	},
 	{
 		timestamps: true,
