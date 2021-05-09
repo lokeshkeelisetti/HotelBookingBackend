@@ -30,37 +30,22 @@ router.route("/addNewHotel").post((req, res) => {
 
 	newHotel
 		.save()
-		.then(() => {
-			Hotel.find({
-				hotelName: req.body.hotelName,
-				address: {
-					street: req.body.street,
-					city: req.body.city,
-					pinCode: Number(req.body.pinCode),
+		.then((hotel) => {
+			const hoteladmin = {
+				name: {
+					firstName: req.body.firstName,
+					lastName: req.body.lastName,
 				},
-			})
-				.then((hotel) => {
-					const hoteladmin = {
-						name: {
-							firstName: req.body.firstName,
-							lastName: req.body.lastName,
-						},
-						email: req.body.email,
-						password: req.body.password,
-						hotelId: hotel[0]._id,
-					};
-					const newHotelAdministration = new HotelAdministration(hoteladmin);
-					newHotelAdministration
-						.save()
-						.then(() => res.json({ success: "Hotel Admin and Hotel added" }))
-						.catch((err) =>
-							res
-								.status(400)
-								.json({ failure: "unable to add hotel admin", error: err })
-						);
-				})
+				email: req.body.email,
+				password: req.body.password,
+				hotelId: hotel._id,
+			};
+			const newHotelAdministration = new HotelAdministration(hoteladmin);
+			newHotelAdministration
+				.save()
+				.then(() => res.json({ success: "Hotel Admin and Hotel added" }))
 				.catch((err) =>
-					res.status(400).json({ failure: "unable to add Hotel Admin ", error: err })
+					res.status(400).json({ failure: "unable to add hotel admin", error: err })
 				);
 		})
 		.catch((err) => res.status(400).json({ failure: "unable to add hotel ", error: err }));
