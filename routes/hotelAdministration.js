@@ -3,12 +3,14 @@ let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
 let HotelRoomType = require("../models/HotelRoomType.model");
 
+//default route
 router.route("/").get((req, res) => {
 	HotelAdministration.find()
 		.then((hotelAdmins) => res.json(hotelAdmins))
 		.catch((err) => res.status(400).json("Error finding admin" + err));
 });
 
+//adding room functionality
 router.route("/addRoom").post((req, res) => {
 	hotelRoom = {
 		hotelRoomType: req.body.hotelRoomType,
@@ -24,7 +26,6 @@ router.route("/addRoom").post((req, res) => {
 		.then(() => res.json({ success: "Room added successfully" }))
 		.catch((err) => res.status(400).json({ failure: "Unable to add room", error: err }));
 });
-
 
 
 // adding receptionist by hotel admin
@@ -45,6 +46,12 @@ router.route("/addReceptionist").post((req, res) => {
 		.catch((err) =>
 			res.status(400).json({ failure: "Unable to add receptionist", error: err })
 		);
+});
+
+router.route("/removeReceptionist/:id").delete((req, res) => {
+	Receptionist.findByIdAndDelete(req.params.id)
+		.then(() => res.json("Successfully removed receptionist!"))
+		.catch((err) => res.status(400).json({ failure: "Unable to remove receptionist . Please try again", error: err }));
 });
 
 //update facilities
@@ -68,3 +75,5 @@ router.route("/updateFacilities/:id").put((req, res) => {
 				.json({ failure: "Unable to find hotel room type witth specified Id", error: err })
 		);
 });
+
+module.exports = router;
