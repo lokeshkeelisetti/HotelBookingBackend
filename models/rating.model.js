@@ -2,15 +2,15 @@ const { Schema, model } = require("mongoose");
 
 const ratingSchema = new Schema(
 	{
-		rating_value: {
+		ratingValue: {
 			type: Number,
 			required: true,
 		},
-		customer: {
+		customerId: {
 			type: String,
 			required: true,
 		},
-		hotel: {
+		hotelId: {
 			type: String,
 			required: true,
 		},

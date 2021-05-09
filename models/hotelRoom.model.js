@@ -2,11 +2,11 @@ const { Schema, model } = require("mongoose");
 
 const hotelRoomSchema = new Schema(
 	{
-		room_no: {
+		roomNo: {
 			type: String,
 			required: true,
 		},
-		hotel: {
+		hotelId: {
 			type: String,
 			required: true,
 		},
@@ -18,6 +18,18 @@ const hotelRoomSchema = new Schema(
 			type: Number,
 			required: true,
 		},
+		bookingDates: [
+			{
+				startDate: {
+					type: Date,
+					required: true,
+				},
+				endDate: {
+					type: Date,
+					required: true,
+				},
+			},
+		],
 	},
 	{
 		timestamps: true,

@@ -20,7 +20,7 @@ const hotelAdministrationSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		hotel: {
+		hotelId: {
 			type: String,
 			required: true,
 		},
