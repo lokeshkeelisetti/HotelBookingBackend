@@ -2,10 +2,18 @@ const router = require("express").Router();
 let Hotel = require("../models/hotel.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 
-router.route("/").get((req, res) => {
+router.route("/hotel").get((req, res) => {
 	Hotel.find()
 		.then((hotels) => res.json(hotels))
-		.catch((err) => res.status(400).json("Error: " + err));
+		.catch((err) => res.status(400).json({ failure: "Unable to find hotels", error: err }));
+});
+
+router.route("/hotelAdmin").get((req, res) => {
+	HotelAdministration.find()
+		.then((hotelAdmins) => res.json(hotelAdmins))
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to find hotel admins", error: err })
+		);
 });
 
 router.route("/addNewHotel").post((req, res) => {
@@ -60,7 +68,13 @@ router.route("/addNewHotel").post((req, res) => {
 
 router.route("/removeHotel/:id").delete((req, res) => {
 	Hotel.findByIdAndDelete(req.params.id)
-		.then(() => res.json("hotel deleted"))
+		.then(() => {
+			HotelAdministration.findOneAndRemove({ hotelId: req.params.id })
+				.then(() => res.json("hotel admin and hotel deleted"))
+				.catch((err) =>
+					res.status(400).json({ failure: "Unable to delete hotel admin", error: err })
+				);
+		})
 		.catch((err) => res.status(400).json({ failure: "Unable to delete hotel", error: err }));
 });
 
