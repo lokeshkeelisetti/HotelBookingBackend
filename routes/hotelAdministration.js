@@ -85,14 +85,4 @@ router.route("/removeRoom/:id").delete((req, res) => {
 
 
 
-	const newReceptionist = new Receptionist(receptionist);
-
-	newReceptionist
-		.save()
-		.then(() => res.json({ success: "Receptionist added successfully" }))
-		.catch((err) =>
-			res.status(400).json({ failure: "Unable to add receptionist", error: err })
-		);
-});
-
 module.exports = router;
