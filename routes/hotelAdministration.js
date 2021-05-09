@@ -3,20 +3,106 @@ let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
 let HotelRoomType = require("../models/HotelRoomType.model");
 
+//default route
 router.route("/").get((req, res) => {
 	HotelAdministration.find()
-		.then((hotelAdministrations) => res.json(hoteladministrations))
+		.then((hotelAdmins) => res.json(hotelAdmins))
 		.catch((err) => res.status(400).json("Error finding admin" + err));
 });
 
+//adding room functionality
 router.route("/addRoom").post((req, res) => {
-	hotelType = req.body.hotelType;
-	hotelId = req.body.hotelId;
-	roomNo = req.body.roomNo;
-	const newRoom = new HotelRoom({ roomNo, hotelId,hotelType,"0"});//default status is '0' for not nookin
+	hotelRoom = {
+		hotelRoomType: req.body.hotelRoomType,
+		hotelId: req.body.hotelId,
+		roomNo: req.body.roomNo,
+		status: 0, //default status is '0' for free room
+	};
+
+	const newRoom = new HotelRoom(hotelRoom);
 
 	newRoom
 		.save()
 		.then(() => res.json({ success: "Room added successfully" }))
 		.catch((err) => res.status(400).json({ failure: "Unable to add room", error: err }));
 });
+
+
+// adding receptionist by hotel admin
+router.route("/addReceptionist").post((req, res) => {
+	receptionist = {
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		email: req.body.email,
+		password: req.body.password, //adding default password later he can update
+		hotelId: req.body.hotelId,
+	};
+
+	const newReceptionist = new Receptionist(receptionist);
+
+	newReceptionist
+		.save()
+		.then(() => res.json({ success: "Receptionist added successfully" }))
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to add receptionist", error: err })
+		);
+});
+
+router.route("/removeReceptionist/:id").delete((req, res) => {
+	Receptionist.findByIdAndDelete(req.params.id)
+		.then(() => res.json("Successfully removed receptionist!"))
+		.catch((err) => res.status(400).json({ failure: "Unable to remove receptionist . Please try again", error: err }));
+});
+
+//update facilities
+router.route("/updateFacilities/:id").put((req, res) => {
+	HotelRoomType.findById(req.params.id)
+		.then((hotelRoomType) => {
+			hotelRoomType.type = req.body.type;
+			hotelRoomType.price = req.body.price;
+			hotelRoomType.facilities.ac_or_not = req.body.ac_or_not;
+			hotelRoomType.facilities.wifi_or_not = req.body.wifi_or_not;
+			hotelRoomType.max_no_of_people = req.body.max_no_of_people;
+			hotelRoomType
+				.save()
+				.then(() => res.json({ success: "Type of hotel room updated!" }))
+				.catch((err) =>
+					res.status(400).json({ failure: "Unable to update hotel type", error: err })
+				);
+		})
+		.catch((err) =>
+			res
+				.status(400)
+				.json({ failure: "Unable to find hotel room type witth specified Id", error: err })
+		);
+});
+//removing room
+router.route("/removeRoom/:id").delete((req, res) => {
+	HotelRoom.findByIdAndDelete(req.params.id)
+		.then(() => res.json("Removed room successfully"))
+		.catch((err) => res.status(400).json({ failure: "Unable to remove room please try again", error: err }));
+});
+
+// adding hotel room type aka facilities
+router.route("/addFacilities").post((req, res) => {
+	facilities = {
+		type: req.body.type,
+		price: Number(req.body.price),
+		facilities:{
+			ac_or_not: req.ac_or_not,
+			wifi_or_not: req.wifi_or_not,
+			max_no_of_people: Number(req.max_no_of_people)
+		},
+	};
+
+	const facilities = new HotelRoomType(facilities);
+
+	facilities
+		.save()
+		.then(() => res.json({ success: "facilities added successfully" }))
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to add facilities", error: err })
+		);
+});
+
+module.exports = router;
