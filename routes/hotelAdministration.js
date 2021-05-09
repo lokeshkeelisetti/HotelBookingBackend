@@ -29,6 +29,7 @@ router.route("/").get((req, res) => {
 		.catch((err) => res.status(400).json("Error finding admin" + err));
 });
 
+// adding receptionist by hotel admin
 router.route("/addReceptionist").post((req, res) => {
 	firstName = req.body.firstName;
 	lastName = req.body.lastName;
@@ -37,7 +38,7 @@ router.route("/addReceptionist").post((req, res) => {
 	hotelId = req.body.hotelId;
 	const newReceptionist = new HotelRoom({ roomNo, hotelId,hotelType,"0"});//default status is '0' for not nookin
 
-	newRoom
+	newReceptionist
 		.save()
 		.then(() => res.json({ success: "Receptionist added successfully" }))
 		.catch((err) => res.status(400).json({ failure: "Unable to add receptionist", error: err }));
