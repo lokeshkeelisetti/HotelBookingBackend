@@ -24,7 +24,7 @@ const hotelRoomTypeSchema = new Schema(
 				required: true,
 			},
 		},
-		imgURLs: [String],
+		imgURLs: { type: [String], default: [] },
 		hotelId: {
 			type: String,
 			required: true,

@@ -20,8 +20,8 @@ const hotelSchema = new Schema(
 				required: true,
 			},
 		},
-		roomIds: [String],
-		imgURLs: [String],
+		roomIds: { type: [String], default: [] },
+		imgURLs: { type: [String], default: [] },
 	},
 	{
 		timestamps: true,
