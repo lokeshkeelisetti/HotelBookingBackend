@@ -2,6 +2,8 @@ const router = require("express").Router();
 let Customer = require("../models/customer.model");
 let Rating = require("../models/rating.model");
 let Booking = require("../models/booking.model");
+let HotelRoom = require("../models/hotelRoom.model");
+let Hotel = require("../models/hotel.model");
 
 router.route("/").get((req, res) => {
 	Customer.find()
@@ -14,6 +16,39 @@ router.route("/findHotel").post((req, res) => {
 	hotelName = req.body.hotelName || "";
 	startDate = req.body.startDate;
 	endDate = req.body.endDate;
+
+	HotelRoom.find({})
+		.then((hotelRoom) => {
+			var valid = 1;
+			var i = 0;
+			var bds = hotelRoom.bookingDates;
+			while (bds[i]) {
+				if (
+					(bds[i].startDate <= startDate && bds[i].endDate >= startDate) ||
+					(bds[i].startDate <= endDate && bds[i].endDate >= endDate)
+				) {
+					valid = 0;
+					break;
+				}
+				i++;
+			}
+			if (valid) {
+				const hotelId = hotelRoom.hotelId;
+				Hotel.findById(hotelId)
+					.then((hotel) => {
+						if (
+							hotel.hotelName.toLowerCase().indexOf(hotelName.toLowerCase()) != -1 &&
+							hotel.address.city.toLowerCase().indexOf(city.toLowerCase()) != -1
+						) {
+							res.json(hotelRoom);
+						}
+					})
+					.catch((err) =>
+						res.status(400).json({ failure: "Unable to find room", error: err })
+					);
+			}
+		})
+		.catch((err) => res.status(400).json({ failure: "Unable to find room", error: err }));
 });
 
 router.route("/bookRoom").post((req, res) => {
