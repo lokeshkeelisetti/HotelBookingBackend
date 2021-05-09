@@ -17,7 +17,7 @@ router.route("/findHotel").post((req, res) => {
 	startDate = req.body.startDate;
 	endDate = req.body.endDate;
 
-	HotelRoom.find({})
+	HotelRoom.find()
 		.then((hotelRoom) => {
 			var valid = 1;
 			var i = 0;
@@ -44,7 +44,7 @@ router.route("/findHotel").post((req, res) => {
 						}
 					})
 					.catch((err) =>
-						res.status(400).json({ failure: "Unable to find room", error: err })
+						res.status(400).json({ failure: "Unable to find room2", error: err })
 					);
 			}
 		})
@@ -82,10 +82,16 @@ router.route("/addRating").post((req, res) => {
 
 	const newRating = new Rating({ customerId, ratingValue, hotelId, comment });
 
-	newRating
-		.save()
-		.then(() => res.json({ success: "Rating added!" }))
-		.catch((err) => res.status(400).json({ failure: "Unable to add rating", error: err }));
+	Hotel.find({ hotelId })
+		.then(() => {
+			newRating
+				.save()
+				.then(() => res.json({ success: "Rating added!" }))
+				.catch((err) =>
+					res.status(400).json({ failure: "Unable to add rating", error: err })
+				);
+		})
+		.catch((err) => res.json({ failure: "Unable to find hotel", error: err }));
 });
 
 router.route("/updateRating/:id").put((req, res) => {
