@@ -36,10 +36,32 @@ router.route("/addReceptionist").post((req, res) => {
 	email = req.body.email;
 	password = req.body.password; //adding default password later he can update
 	hotelId = req.body.hotelId;
-	const newReceptionist = new HotelRoom({ roomNo, hotelId,hotelType,"0"});//default status is '0' for not nookin
+	const newReceptionist = new Receptionist({firstName,lastName,email,passwprd,hotelId });
 
 	newReceptionist
 		.save()
 		.then(() => res.json({ success: "Receptionist added successfully" }))
 		.catch((err) => res.status(400).json({ failure: "Unable to add receptionist", error: err }));
+});
+
+//update facilities
+router.route("/updateFacilities/:id").put((req, res) => {
+	HotelRoomType.findById(req.params.id)
+		.then((hotelRoomType) => {
+			hotelRoomType.price = req.body.price;
+			hotelRoomType.facilities.ac_or_not = req.body.ac_or_not;
+			hotelRoomType.facilities.wifi_or_not = req.body.wifi_or_not;
+			hotelRoomType.max_no_of_people = req.body.max_no_of_people;
+			hotelRoomType
+				.save()
+				.then(() => res.json({ success: "Type of hotel room updated!" }))
+				.catch((err) =>
+					res.status(400).json({ failure: "Unable to update hotel type", error: err })
+				);
+		})
+		.catch((err) =>
+			res
+				.status(400)
+				.json({ failure: "Unable to find hotel room type witth specified Id", error: err })
+		);
 });
