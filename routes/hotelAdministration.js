@@ -75,5 +75,11 @@ router.route("/updateFacilities/:id").put((req, res) => {
 				.json({ failure: "Unable to find hotel room type witth specified Id", error: err })
 		);
 });
+//removing room
+router.route("/removeRoom/:id").delete((req, res) => {
+	HotelRoom.findByIdAndDelete(req.params.id)
+		.then(() => res.json("Removed room successfully"))
+		.catch((err) => res.status(400).json({ failure: "Unable to remove room please try again", error: err }));
+});
 
 module.exports = router;
