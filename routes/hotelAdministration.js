@@ -83,6 +83,26 @@ router.route("/removeRoom/:id").delete((req, res) => {
 		.catch((err) => res.status(400).json({ failure: "Unable to remove room please try again", error: err }));
 });
 
+// adding hotel room type aka facilities
+router.route("/addFacilities").post((req, res) => {
+	facilities = {
+		type: req.body.type,
+		price: Number(req.body.price),
+		facilities:{
+			ac_or_not: req.ac_or_not,
+			wifi_or_not: req.wifi_or_not,
+			max_no_of_people: Number(req.max_no_of_people)
+		},
+	};
 
+	const facilities = new HotelRoomType(facilities);
+
+	facilities
+		.save()
+		.then(() => res.json({ success: "facilities added successfully" }))
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to add facilities", error: err })
+		);
+});
 
 module.exports = router;
