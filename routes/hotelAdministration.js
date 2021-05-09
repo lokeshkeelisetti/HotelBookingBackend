@@ -1,7 +1,7 @@
 const router = require("express").Router();
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
-let HotelRoomType = require("../models/HotelRoomType.model");
+let HotelRoomType = require("../models/hotelRoomType.model");
 
 //default route
 router.route("/").get((req, res) => {
