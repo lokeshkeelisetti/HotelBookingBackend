@@ -5,15 +5,19 @@ let HotelRoomType = require("../models/HotelRoomType.model");
 
 router.route("/").get((req, res) => {
 	HotelAdministration.find()
-		.then((hotelAdministrations) => res.json(hoteladministrations))
+		.then((hotelAdmins) => res.json(hotelAdmins))
 		.catch((err) => res.status(400).json("Error finding admin" + err));
 });
 
 router.route("/addRoom").post((req, res) => {
-	hotelType = req.body.hotelType;
-	hotelId = req.body.hotelId;
-	roomNo = req.body.roomNo;
-	const newRoom = new HotelRoom({ roomNo, hotelId,hotelType,"0"});//default status is '0' for not nookin
+	hotelRoom = {
+		hotelRoomType: req.body.hotelRoomType,
+		hotelId: req.body.hotelId,
+		roomNo: req.body.roomNo,
+		status: 0, //default status is '0' for free room
+	};
+
+	const newRoom = new HotelRoom(hotelRoom);
 
 	newRoom
 		.save()
@@ -23,25 +27,24 @@ router.route("/addRoom").post((req, res) => {
 
 
 
-router.route("/").get((req, res) => {
-	HotelAdministration.find()
-		.then((hotelAdministrations) => res.json(hoteladministrations))
-		.catch((err) => res.status(400).json("Error finding admin" + err));
-});
-
 // adding receptionist by hotel admin
 router.route("/addReceptionist").post((req, res) => {
-	firstName = req.body.firstName;
-	lastName = req.body.lastName;
-	email = req.body.email;
-	password = req.body.password; //adding default password later he can update
-	hotelId = req.body.hotelId;
-	const newReceptionist = new Receptionist({firstName,lastName,email,passwprd,hotelId });
+	receptionist = {
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		email: req.body.email,
+		password: req.body.password, //adding default password later he can update
+		hotelId: req.body.hotelId,
+	};
+
+	const newReceptionist = new Receptionist(receptionist);
 
 	newReceptionist
 		.save()
 		.then(() => res.json({ success: "Receptionist added successfully" }))
-		.catch((err) => res.status(400).json({ failure: "Unable to add receptionist", error: err }));
+		.catch((err) =>
+			res.status(400).json({ failure: "Unable to add receptionist", error: err })
+		);
 });
 
 //update facilities
