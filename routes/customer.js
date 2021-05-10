@@ -4,7 +4,7 @@ let Rating = require("../models/rating.model");
 let Booking = require("../models/booking.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
-let Hotel = require("../models/hotel.model");
+// let Hotel = require("../models/hotel.model");
 
 const checkLogin = (userType, userSecret) => {
 	if (userType == "customer" && userSecret == process.env.CUSTOMER_SECRET) return true;
@@ -307,9 +307,7 @@ router.route("/updateRating").put((req, res) => {
 					.catch((err) => res.json({ failure: "Unable to update rating", error: err }));
 			})
 			.catch((err) =>
-				res
-					.status(400)
-					.json({ failure: "Unable to find rating witth specified Id", error: err })
+				res.json({ failure: "Unable to find rating witth specified Id", error: err })
 			);
 	} else {
 		res.json({ failure: "Access Denied" });
