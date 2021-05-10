@@ -31,6 +31,7 @@ router.route("/addHotelType").post((req, res) => {
 		.catch((err) => res.json({ failure: "Unable to find hotel", error: err }));
 });
 
+//adding room functionality
 router.route("/addRoom").post((req, res) => {
 	hotelRoom = {
 		hotelRoomTypeId: req.body.hotelRoomTypeId,

@@ -5,7 +5,6 @@ const indexRouter = require("./routes/index");
 const customerRouter = require("./routes/customer");
 const maintainerRouter = require("./routes/maintainer");
 const hotelAdministrationRouter = require("./routes/hotelAdministration");
-
 require("dotenv").config();
 
 const app = express();
