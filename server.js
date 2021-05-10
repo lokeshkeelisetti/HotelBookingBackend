@@ -5,6 +5,7 @@ const indexRouter = require("./routes/index");
 const customerRouter = require("./routes/customer");
 const maintainerRouter = require("./routes/maintainer");
 const hotelAdministrationRouter = require("./routes/hotelAdministration");
+const receptionistRouter = require("./routes/receptionist");
 require("dotenv").config();
 
 const app = express();
@@ -34,6 +35,7 @@ app.use("/", indexRouter);
 app.use("/customer", customerRouter);
 app.use("/maintainer", maintainerRouter);
 app.use("/hotelAdministration", hotelAdministrationRouter);
+app.use("/receptionist",receptionistRouter);
 
 app.listen(port, () => {
 	console.log(`Server is running on ${port}`);
