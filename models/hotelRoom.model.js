@@ -10,12 +10,8 @@ const hotelRoomSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		hotelRoomType: {
+		hotelRoomTypeId: {
 			type: String,
-			required: true,
-		},
-		status: {
-			type: Number,
 			required: true,
 		},
 		bookingDates: {

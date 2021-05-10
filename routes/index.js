@@ -16,7 +16,7 @@ const checkMaintainer = (email, password, res) => {
 					type: "maintainer",
 				});
 		})
-		.catch((err) => res.status(400).json({ failure: "Unable to find User", error: err }));
+		.catch((err) => res.json({ failure: "Unable to find User", error: err }));
 };
 
 const checkReceptionist = (email, password, res) => {
@@ -57,7 +57,7 @@ const checkCustomer = (email, password, res) => {
 router.route("/").get((req, res) => {
 	Hotel.find()
 		.then((hotels) => res.json(hotels))
-		.catch((err) => res.status(400).json("Error: " + err));
+		.catch((err) => res.json("Error: " + err));
 });
 
 router.route("/login").post((req, res) => {
@@ -80,7 +80,7 @@ router.route("/registerCustomer").post((req, res) => {
 	newCustomer
 		.save()
 		.then(() => res.json({ success: "Customer created!" }))
-		.catch((err) => res.status(400).json({ failure: "Unable to create customer", error: err }));
+		.catch((err) => res.json({ failure: "Unable to create customer", error: err }));
 });
 
 router.route("/registerMaintainer").post((req, res) => {
@@ -97,9 +97,7 @@ router.route("/registerMaintainer").post((req, res) => {
 	newMaintainer
 		.save()
 		.then(() => res.json({ success: "Maintainer created!" }))
-		.catch((err) =>
-			res.status(400).json({ failure: "Unable to create Maintainer", error: err })
-		);
+		.catch((err) => res.json({ failure: "Unable to create Maintainer", error: err }));
 });
 
 module.exports = router;

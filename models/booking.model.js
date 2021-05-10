@@ -24,6 +24,10 @@ const bookingSchema = new Schema(
 				required: true,
 			},
 		},
+		status: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,
