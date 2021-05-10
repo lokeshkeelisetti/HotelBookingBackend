@@ -14,6 +14,8 @@ const checkMaintainer = (email, password, res) => {
 				res.json({
 					success: "User verified",
 					type: "maintainer",
+					secret: process.env.MAINTAINER_SECRET,
+					id: maintainer[0]._id,
 				});
 		})
 		.catch((err) => res.json({ failure: "Unable to find User", error: err }));
@@ -28,6 +30,8 @@ const checkReceptionist = (email, password, res) => {
 				res.json({
 					success: "User verified",
 					type: "receptionist",
+					secret: process.env.RECEPTIONIST_SECRET,
+					id: receptionist[0]._id,
 				});
 		})
 		.catch((err) => checkMaintainer(email, password, res));
@@ -38,7 +42,13 @@ const checkHotelAdmin = (email, password, res) => {
 		.then((hotelAdministration) => {
 			if (hotelAdministration[0].password != password)
 				res.json({ error: "Incorrect Email or Password" });
-			else res.json({ success: "User verified", type: "hotelAdministration" });
+			else
+				res.json({
+					success: "User verified",
+					type: "hotelAdministration",
+					secret: process.env.HOTELADMIN_SECRET,
+					id: hotelAdministration[0]._id,
+				});
 		})
 		.catch((err) => checkReceptionist(email, password, res));
 };
@@ -49,15 +59,21 @@ const checkCustomer = (email, password, res) => {
 			// console.log(customer);
 			if (customer[0].password != password)
 				res.json({ error: "Incorrect Email or Password" });
-			else res.json({ success: "User verified", type: "Customer" });
+			else
+				res.json({
+					success: "User verified",
+					type: "Customer",
+					secret: process.env.CUSTOMER_SECRET,
+					id: customer[0]._id,
+				});
 		})
 		.catch((err) => checkHotelAdmin(email, password, res));
 };
 
-router.route("/").get((req, res) => {
-	Hotel.find()
-		.then((hotels) => res.json(hotels))
-		.catch((err) => res.json("Error: " + err));
+router.route("/findHotel").get((req, res) => {
+	HotelRoomType.find()
+		.then((hotelRoomTypes) => res.json(hotelRoomTypes))
+		.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
 });
 
 router.route("/login").post((req, res) => {

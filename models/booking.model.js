@@ -28,6 +28,10 @@ const bookingSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
+		rating: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,

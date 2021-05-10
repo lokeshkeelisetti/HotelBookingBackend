@@ -6,21 +6,27 @@ let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
 let Hotel = require("../models/hotel.model");
 
-router.route("/").get((req, res) => {
-	Customer.find()
-		.then((customers) => res.json(customers))
-		.catch((err) => res.json({ failure: "Unable to find customers", error: err }));
-});
+const checkLogin = (userType, userSecret) => {
+	if (userType == "customer" && userSecret == process.env.CUSTOMER_SECRET) return true;
+	else return false;
+};
 
 router.route("/findHotel").get((req, res) => {
-	HotelRoomType.find()
-		.then((hotelRoomTypes) => res.json(hotelRoomTypes))
-		.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		HotelRoomType.find()
+			.then((hotelRoomTypes) => res.json(hotelRoomTypes))
+			.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
 });
 
 router.route("/bookRoom").post((req, res) => {
-	HotelRoom.find({ hotelRoomTypeId: req.body.hotelRoomTypeId, hotelId: req.body.hotelId }).then(
-		(hotelRooms) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		HotelRoom.find({
+			hotelRoomTypeId: req.body.hotelRoomTypeId,
+			hotelId: req.body.hotelId,
+		}).then((hotelRooms) => {
 			var i = 0;
 			var roomId = "";
 			var valid = 1;
@@ -158,125 +164,156 @@ router.route("/bookRoom").post((req, res) => {
 					})
 					.catch((err) => res.json({ failure: "Unable to create booking", error: err }));
 			} else res.json({ failure: "Room not available" });
-		}
-	);
+		});
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
 });
 
 router.route("/cancelBooking/:id").delete((req, res) => {
-	Booking.findByIdAndDelete(req.params.id)
-		.then((booking) => {
-			HotelRoom.findById(booking.hotelRoomId).then((room) => {
-				room.bookingDates = room.bookingDates.filter((date) => {
-					console.log(date.startDate);
-					console.log(booking.duration.startDate);
-					console.log(date.endDate);
-					console.log(booking.duration.endDate);
-					return (
-						String(date.startDate) != String(booking.duration.startDate) ||
-						String(date.endDate) != String(booking.duration.endDate)
-					);
-				});
-				console.log(room.bookingDates);
-				room.save()
-					.then((room1) => {
-						HotelRoomType.findById(room1.hotelRoomTypeId)
-							.then((currentRoomType) => {
-								currentRoomType.bookingDates = currentRoomType.bookingDates.filter(
-									(date1) => {
-										return (
-											String(date1.startDate) !=
-												String(booking.duration.startDate) ||
-											String(date1.endDate) !=
-												String(booking.duration.endDate)
-										);
-									}
-								);
-								currentRoomType
-									.save()
-									.then(() => {
-										Customer.findById(booking.customerId)
-											.then((currentCustomer) => {
-												currentCustomer.upcomingBookingIds = currentCustomer.upcomingBookingIds.filter(
-													(id) => {
-														return id != booking._id;
-													}
-												);
-												currentCustomer
-													.save()
-													.then(() => {
-														res.json({
-															success:
-																"Booking cancelled successfully",
-														});
-													})
-													.catch((err) =>
-														res.json({
-															failure: "Unable to cancel booking",
-															error: err,
-														})
-													);
-											})
-											.catch((err) =>
-												res.json({
-													failure: "Unable to cancel booking",
-													error: err,
-												})
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Booking.findOneAndDelete({ _id: req.params.id, customerId: req.headers.customerid })
+			.then((booking) => {
+				HotelRoom.findById(booking.hotelRoomId).then((room) => {
+					room.bookingDates = room.bookingDates.filter((date) => {
+						return (
+							String(date.startDate) != String(booking.duration.startDate) ||
+							String(date.endDate) != String(booking.duration.endDate)
+						);
+					});
+					room.save()
+						.then((room1) => {
+							HotelRoomType.findById(room1.hotelRoomTypeId)
+								.then((currentRoomType) => {
+									currentRoomType.bookingDates = currentRoomType.bookingDates.filter(
+										(date1) => {
+											return (
+												String(date1.startDate) !=
+													String(booking.duration.startDate) ||
+												String(date1.endDate) !=
+													String(booking.duration.endDate)
 											);
-									})
-									.catch((err) =>
-										res.json({
-											failure: "Unable to cancel booking",
-											error: err,
-										})
+										}
 									);
-							})
-							.catch((err) =>
-								res.json({ failure: "Unable to cancel booking", error: err })
-							);
-					})
-					.catch((err) => res.json({ failure: "Unable to cancel booking", error: err }));
-			});
-		})
-		.catch((err) => res.json({ failure: "Unable to cancel booking", error: err }));
+									currentRoomType
+										.save()
+										.then(() => {
+											Customer.findById(booking.customerId)
+												.then((currentCustomer) => {
+													currentCustomer.upcomingBookingIds = currentCustomer.upcomingBookingIds.filter(
+														(id) => {
+															return id != booking._id;
+														}
+													);
+													currentCustomer
+														.save()
+														.then(() => {
+															res.json({
+																success:
+																	"Booking cancelled successfully",
+															});
+														})
+														.catch((err) =>
+															res.json({
+																failure: "Unable to cancel booking",
+																error: err,
+															})
+														);
+												})
+												.catch((err) =>
+													res.json({
+														failure: "Unable to cancel booking",
+														error: err,
+													})
+												);
+										})
+										.catch((err) =>
+											res.json({
+												failure: "Unable to cancel booking",
+												error: err,
+											})
+										);
+								})
+								.catch((err) =>
+									res.json({ failure: "Unable to cancel booking", error: err })
+								);
+						})
+						.catch((err) =>
+							res.json({ failure: "Unable to cancel booking", error: err })
+						);
+				});
+			})
+			.catch((err) => res.json({ failure: "Unable to cancel booking1", error: err }));
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
 });
 
 router.route("/addRating").post((req, res) => {
-	var rating = {
-		customerId: req.body.customerId,
-		ratingValue: Number(req.body.ratingValue),
-		hotelId: req.body.hotelId,
-		comment: req.body.comment,
-	};
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		var rating = {
+			customerId: req.body.customerId,
+			ratingValue: Number(req.body.ratingValue),
+			hotelId: req.body.hotelId,
+			comment: req.body.comment,
+		};
 
-	const newRating = new Rating(rating);
+		const newRating = new Rating(rating);
 
-	Hotel.find({ hotelId })
-		.then(() => {
-			newRating
-				.save()
-				.then(() => res.json({ success: "Rating added!" }))
-				.catch((err) => res.json({ failure: "Unable to add rating", error: err }));
+		Booking.findOne({
+			status: true,
+			customerId: req.body.customerId,
+			hotelId: req.body.hotelId,
+			rating: false,
+			_id: req.body.bookingId,
 		})
-		.catch((err) => res.json({ failure: "Unable to find hotel", error: err }));
+			.then((booking) => {
+				booking.rating = true;
+				console.log(booking);
+
+				booking
+					.save()
+					.then(() => {
+						newRating
+							.save()
+							.then(() => res.json({ success: "Rating added!" }))
+							.catch((err) =>
+								res.json({ failure: "Unable to add rating", error: err })
+							);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to save booking status", error: err })
+					);
+			})
+			.catch((err) => res.json({ failure: "Unable to find booking", error: err }));
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
 });
 
-router.route("/updateRating/:id").put((req, res) => {
-	Rating.findById(req.params.id)
-		.then((rating) => {
-			rating.customerId = req.body.customerId;
-			rating.ratingValue = Number(req.body.ratingValue);
-			rating.hotelId = req.body.hotelId;
-			rating.comment = req.body.comment;
-			rating
-				.save()
-				.then(() => res.json({ success: "Rating updated!" }))
-				.catch((err) => res.json({ failure: "Unable to update rating", error: err }));
+router.route("/updateRating").put((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Rating.findOne({
+			_id: req.body.ratingId,
+			customerId: req.body.customerId,
+			hotelId: req.body.hotelId,
 		})
-		.catch((err) =>
-			res
-				.status(400)
-				.json({ failure: "Unable to find rating witth specified Id", error: err })
-		);
+			.then((rating) => {
+				rating.ratingValue = Number(req.body.ratingValue);
+				rating.comment = req.body.comment;
+				rating
+					.save()
+					.then(() => res.json({ success: "Rating updated!" }))
+					.catch((err) => res.json({ failure: "Unable to update rating", error: err }));
+			})
+			.catch((err) =>
+				res
+					.status(400)
+					.json({ failure: "Unable to find rating witth specified Id", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
 });
 
 module.exports = router;
