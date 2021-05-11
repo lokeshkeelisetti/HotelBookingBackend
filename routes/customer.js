@@ -54,7 +54,7 @@ router.route("/bookRoom").post((req, res) => {
 			var i = 0;
 			var roomId = "";
 			var valid = 1;
-			// console.log(hotelRooms);
+			console.log(hotelRooms);
 			while (hotelRooms[i]) {
 				bookingDates = hotelRooms[i].bookingDates;
 				var j = 0;
@@ -88,7 +88,7 @@ router.route("/bookRoom").post((req, res) => {
 				i++;
 			}
 
-			// console.log(i);
+			console.log(i);
 
 			if (i == 0) valid = 0;
 
