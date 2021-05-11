@@ -16,7 +16,7 @@ router.route("/updateStatus/:id").put((req, res) => {
 			.then(() => {
 				Booking.findOne({ _id: req.params.id, hotelId: req.body.hotelId })
 					.then((booking) => {
-						booking.status = Boolean(req.body.status);
+						booking.status = true;
 						booking
 							.save()
 							.then(() => res.json({ success: "hotel room is confirmed!" }))
@@ -36,6 +36,5 @@ router.route("/updateStatus/:id").put((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-
 
 module.exports = router;
