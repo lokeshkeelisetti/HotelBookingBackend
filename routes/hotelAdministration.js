@@ -134,7 +134,7 @@ router.route("/addReceptionist").post((req, res) => {
 		receptionist = {
 			name: { firstName: req.body.firstName, lastName: req.body.lastName },
 			email: req.body.email,
-			password: req.body.password,
+			password: md5(req.body.password),
 			hotelId: req.body.hotelId,
 		};
 

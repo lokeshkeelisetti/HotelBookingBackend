@@ -88,7 +88,7 @@ router.route("/addNewHotel").post((req, res) => {
 						lastName: req.body.lastName,
 					},
 					email: req.body.email,
-					password: req.body.password,
+					password: md5(req.body.password),
 					hotelId: hotel._id,
 				};
 				const newHotelAdministration = new HotelAdministration(hoteladmin);
