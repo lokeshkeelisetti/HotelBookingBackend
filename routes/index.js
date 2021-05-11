@@ -221,6 +221,7 @@ router.route("/findHotelRoomTypes").post((req, res) => {
 		.then((hotelRooms) => {
 			var i = 0;
 			var hotelTypeIds = [];
+			var hotelIds = [];
 			var k = 0;
 
 			while (hotelRooms[i]) {
@@ -250,6 +251,7 @@ router.route("/findHotelRoomTypes").post((req, res) => {
 
 				if (valid) {
 					hotelTypeIds[k] = hotelRooms[i].hotelRoomTypeId;
+					hotelIds[k] = hotelRooms[i].hotelId;
 					k++;
 				}
 
@@ -257,7 +259,16 @@ router.route("/findHotelRoomTypes").post((req, res) => {
 			}
 
 			HotelRoomType.find({ _id: hotelTypeIds })
-				.then((hotelRoomTypes) => res.json(hotelRoomTypes))
+				.then((hotelRoomTypes) => {
+					Hotel.find({ _id: hotelIds })
+						.then((hotels) => {
+							res.json({
+								hotels,
+								hotelRoomTypes,
+							});
+						})
+						.catch((err) => res.json({ failure: "Unable to find hotel", error: err }));
+				})
 				.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
 		})
 		.catch((err) => res.json({ failure: "Unable to find rooms", error: err }));
