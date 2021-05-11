@@ -65,7 +65,12 @@ router.route("/bookRoom").post((req, res) => {
 					bsd = new Date(bookingDates[j].startDate);
 					bed = new Date(bookingDates[j].endDate);
 					j++;
-					if ((bsd <= sd && sd <= bed) || (bsd <= ed && ed <= bed)) {
+					if (
+						(bsd <= sd && sd <= bed) ||
+						(bsd <= ed && ed <= bed) ||
+						(sd <= bsd && bsd <= ed) ||
+						(sd <= bed && bed <= ed)
+					) {
 						valid = 0;
 						break;
 					}
