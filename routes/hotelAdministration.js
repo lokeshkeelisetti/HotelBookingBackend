@@ -11,6 +11,7 @@ const checkLogin = (userType, userSecret) => {
 	else return false;
 };
 
+//adds what facilities a room contains
 router.route("/addHotelType").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		hotelRoomType = {
@@ -85,7 +86,7 @@ router.route("/addRoom").post((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-
+//deletes room 
 router.route("/deleteRoom/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({ _id: req.headers.hotelAdminId, hotelId: req.headers.hotelId })
@@ -101,7 +102,7 @@ router.route("/deleteRoom/:id").delete((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-
+// Hotel admin adds receptionist
 router.route("/addReceptionist").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		receptionist = {
@@ -128,7 +129,7 @@ router.route("/addReceptionist").post((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-
+// Hotel admin removes receptionist
 router.route("/removeReceptionist/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({ _id: req.headers.hotelAdminId, hotelId: req.headers.hotelId })
@@ -144,7 +145,7 @@ router.route("/removeReceptionist/:id").delete((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-
+// Hotel admin updates facilities of room type
 router.route("/updateHotelRoomType/:id").put((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({ _id: req.body.hotelAdminId, hotelId: req.body.hotelId })
