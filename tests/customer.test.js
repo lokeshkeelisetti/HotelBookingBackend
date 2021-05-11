@@ -12,3 +12,15 @@ test('database should be working Create/Read', async () => {
     let result = await customer.findOne({ email: 'abc@w.com' });
     expect(result.email).toBe('abc@w.com');
 });
+
+test('database should be working Update', async () => {
+    await customer.updateOne({ email: 'abc@w.com' }, { $set: { "email": 'ab@w.com' } });
+    let result = await customer.findOne({ email: 'ab@w.com' });
+    expect(result.email).toBe('ab@w.com');
+})
+
+test('database should be working (Delete)', async () => {
+    await customer.deleteOne({ email: 'ab@d.com' });
+    let result = await customer.findOne({ email: 'ab@d.com' });
+    expect(result).toBe(null);
+})
