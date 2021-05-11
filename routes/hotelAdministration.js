@@ -50,7 +50,6 @@ router.route("/addHotelType").post((req, res) => {
 			},
 			imgURLs: req.body.imgURLs || [],
 			hotelId: req.body.hotelId,
-			bookingDates: [],
 		};
 
 		const newHotelRoomType = new HotelRoomType(hotelRoomType);
