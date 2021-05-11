@@ -2,6 +2,7 @@ const router = require("express").Router();
 let Hotel = require("../models/hotel.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Customer = require("../models/customer.model");
+let Receptionist = require("../models/receptionist.model") ;
 
 const checkLogin = (userType, userSecret) => {
 	if (userType == "maintainer" && userSecret == process.env.MAINTAINER_SECRET) return true;
@@ -83,6 +84,11 @@ router.route("/removeHotel/:id").delete((req, res) => {
 					.then(() => res.json("hotel admin and hotel deleted"))
 					.catch((err) =>
 						res.json({ failure: "Unable to delete hotel admin", error: err })
+					);
+					Receptionist.findOneAndRemove({ hotelId: req.params.id })
+					.then(() => res.json("receptionist and hotel deleted"))
+					.catch((err) =>
+						res.json({ failure: "Unable to delete hotel receptionist", error: err })
 					);
 			})
 			.catch((err) => res.json({ failure: "Unable to delete hotel", error: err }));
