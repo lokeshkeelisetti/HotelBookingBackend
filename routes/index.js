@@ -1,5 +1,5 @@
 const router = require("express").Router();
-let Hotel = require("../models/hotel.model");
+let HotelRoomType = require("../models/hotelRoomType.model");
 let Customer = require("../models/customer.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
