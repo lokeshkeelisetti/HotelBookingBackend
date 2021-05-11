@@ -4,6 +4,7 @@ let Customer = require("../models/customer.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
 let Maintainer = require("../models/maintainer.model");
+let Booking = require("../models/booking.model");
 
 const checkMaintainer = (email, password, res) => {
 	Maintainer.find({ email: email })
@@ -59,13 +60,71 @@ const checkCustomer = (email, password, res) => {
 			// console.log(customer);
 			if (customer[0].password != password)
 				res.json({ error: "Incorrect Email or Password" });
-			else
-				res.json({
-					success: "User verified",
-					type: "customer",
-					secret: process.env.CUSTOMER_SECRET,
-					id: customer[0]._id,
-				});
+			else {
+				pastBookings = [];
+				upcomingBookings = [];
+
+				pbIds = customer[0].previousBookingIds;
+				ubIds = customer[0].upcomingBookingIds;
+
+				Booking.find({ _id: pbIds })
+					.then((bookings1) => {
+						pastBookings = bookings1;
+						Booking.find({ _id: ubIds })
+							.then((bookings) => {
+								upcomingBookings = bookings;
+								res.json({
+									success: "User verified",
+									type: "customer",
+									secret: process.env.CUSTOMER_SECRET,
+									id: customer[0]._id,
+									customerDetails: customer[0],
+									pastBookings: pastBookings,
+									upcomingBookings: upcomingBookings,
+								});
+							})
+							.catch(() => {
+								upcomingBookings = [];
+								res.json({
+									success: "User verified",
+									type: "customer",
+									secret: process.env.CUSTOMER_SECRET,
+									id: customer[0]._id,
+									customerDetails: customer[0],
+									pastBookings: pastBookings,
+									upcomingBookings: upcomingBookings,
+								});
+							});
+					})
+					.catch(() => {
+						pastBookings = [];
+						Booking.find({ _id: ubIds })
+							.then((bookings) => {
+								upcomingBookings = bookings;
+								res.json({
+									success: "User verified",
+									type: "customer",
+									secret: process.env.CUSTOMER_SECRET,
+									id: customer[0]._id,
+									customerDetails: customer[0],
+									pastBookings: pastBookings,
+									upcomingBookings: upcomingBookings,
+								});
+							})
+							.catch(() => {
+								upcomingBookings = [];
+								res.json({
+									success: "User verified",
+									type: "customer",
+									secret: process.env.CUSTOMER_SECRET,
+									id: customer[0]._id,
+									customerDetails: customer[0],
+									pastBookings: pastBookings,
+									upcomingBookings: upcomingBookings,
+								});
+							});
+					});
+			}
 		})
 		.catch((err) => checkHotelAdmin(email, password, res));
 };
