@@ -32,7 +32,7 @@ router.route("/customers").get((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		Customer.find()
 			.then((customers) => res.json(customers))
-			.catch((err) => res.json({ failure: "Unable to find hotel admins", error: err }));
+			.catch((err) => res.json({ failure: "Unable to find customers", error: err }));
 	} else {
 		res.json({ failure: "Access Denied" });
 	}
