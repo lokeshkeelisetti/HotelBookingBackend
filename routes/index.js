@@ -45,13 +45,56 @@ const checkHotelAdmin = (email, password, res) => {
 		.then((hotelAdministration) => {
 			if (hotelAdministration[0].password != password)
 				res.json({ error: "Incorrect Email or Password" });
-			else
-				res.json({
-					success: "User verified",
-					type: "hotelAdministration",
-					secret: process.env.HOTELADMIN_SECRET,
-					id: hotelAdministration[0]._id,
-				});
+			else {
+				Hotel.findById(hotelAdministration[0].hotelId)
+					.then((hotel) => {
+						HotelRoom.find({ hotelId: hotelAdministration[0].hotelId })
+							.then((hotelRooms) => {
+								HotelRoomType.find({
+									hotelId: hotelAdministration[0].hotelId,
+								})
+									.then((hotelRoomTypes) => {
+										Receptionist.find({
+											hotelId: hotelAdministration[0].hotelId,
+										})
+											.then((receptionists) => {
+												res.json({
+													success: "User verified",
+													type: "hotelAdministration",
+													secret: process.env.HOTELADMIN_SECRET,
+													id: hotelAdministration[0]._id,
+													hotelAdminDetails: hotelAdministration[0],
+													hotel,
+													hotelRooms,
+													hotelRoomTypes,
+													receptionists,
+												});
+											})
+											.catch((err) =>
+												res.json({
+													failure: "Unable to find receptionist details",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to find hotel room type details",
+											error: err,
+										})
+									);
+							})
+							.catch((err) =>
+								res.json({
+									failure: "Unable to find hotel room details",
+									error: err,
+								})
+							);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to find hotel details", error: err })
+					);
+			}
 		})
 		.catch((err) => checkReceptionist(email, password, res));
 };

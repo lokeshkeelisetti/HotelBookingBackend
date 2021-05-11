@@ -86,7 +86,7 @@ router.route("/addRoom").post((req, res) => {
 		res.json({ failure: "Access Denied" });
 	}
 });
-//deletes room 
+//deletes room
 router.route("/deleteRoom/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({ _id: req.headers.hotelAdminId, hotelId: req.headers.hotelId })
