@@ -4,7 +4,7 @@
   "description": "backend for hotel booking portal",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test jest --forceExit --detectOpenHandles  --watchAll --maxWorkers=1"
   },
   "author": "",
   "license": "ISC",
