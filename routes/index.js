@@ -62,7 +62,7 @@ const checkCustomer = (email, password, res) => {
 			else
 				res.json({
 					success: "User verified",
-					type: "Customer",
+					type: "customer",
 					secret: process.env.CUSTOMER_SECRET,
 					id: customer[0]._id,
 				});
