@@ -262,8 +262,18 @@ router.route("/findHotelRoomTypes").post((req, res) => {
 				.then((hotelRoomTypes) => {
 					Hotel.find({ _id: hotelIds })
 						.then((hotels) => {
+							let hotelDetails = {};
+							var i = 0;
+							while (hotels[i]) {
+								hotelDetails[hotels[i]._id] = {
+									name: hotels[i].hotelName,
+									address: hotels[i].address,
+								};
+								i++;
+							}
+
 							res.json({
-								hotels,
+								hotelDetails,
 								hotelRoomTypes,
 							});
 						})
