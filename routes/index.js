@@ -19,6 +19,7 @@ const checkMaintainer = (email, password, res) => {
 					type: "maintainer",
 					secret: process.env.MAINTAINER_SECRET,
 					id: maintainer[0]._id,
+					maintainerDetails: maintainer[0],
 				});
 		})
 		.catch((err) => res.json({ failure: "Unable to find User", error: err }));
