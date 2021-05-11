@@ -29,21 +29,6 @@ const hotelRoomTypeSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		bookingDates: {
-			type: [
-				{
-					startDate: {
-						type: Date,
-						required: true,
-					},
-					endDate: {
-						type: Date,
-						required: true,
-					},
-				},
-			],
-			default: [],
-		},
 	},
 	{
 		timestamps: true,

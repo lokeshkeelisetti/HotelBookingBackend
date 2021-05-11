@@ -124,42 +124,9 @@ router.route("/bookRoom").post((req, res) => {
 												customer
 													.save()
 													.then(() => {
-														HotelRoomType.findById(
-															req.body.hotelRoomTypeId
-														)
-															.then((currentRoomType) => {
-																currentRoomType.bookingDates = [
-																	{
-																		startDate:
-																			req.body.startDate,
-																		endDate: req.body.endDate,
-																	},
-																	...currentRoomType.bookingDates,
-																];
-
-																currentRoomType
-																	.save()
-																	.then(() =>
-																		res.json({
-																			success:
-																				"Booking created successfully",
-																		})
-																	)
-																	.catch((err) =>
-																		res.json({
-																			failure:
-																				"Unable to create booking",
-																			error: err,
-																		})
-																	);
-															})
-															.catch((err) =>
-																res.json({
-																	failure:
-																		"Unable to create booking",
-																	error: err,
-																})
-															);
+														res.json({
+															success: "Booking created successfully",
+														});
 													})
 													.catch((err) =>
 														res.json({
@@ -206,50 +173,19 @@ router.route("/cancelBooking/:id").delete((req, res) => {
 						);
 					});
 					room.save()
-						.then((room1) => {
-							HotelRoomType.findById(room1.hotelRoomTypeId)
-								.then((currentRoomType) => {
-									currentRoomType.bookingDates =
-										currentRoomType.bookingDates.filter((date1) => {
-											return (
-												String(date1.startDate) !=
-													String(booking.duration.startDate) ||
-												String(date1.endDate) !=
-													String(booking.duration.endDate)
-											);
+						.then(() => {
+							Customer.findById(booking.customerId)
+								.then((currentCustomer) => {
+									currentCustomer.upcomingBookingIds =
+										currentCustomer.upcomingBookingIds.filter((id) => {
+											return id != booking._id;
 										});
-									currentRoomType
+									currentCustomer
 										.save()
 										.then(() => {
-											Customer.findById(booking.customerId)
-												.then((currentCustomer) => {
-													currentCustomer.upcomingBookingIds =
-														currentCustomer.upcomingBookingIds.filter(
-															(id) => {
-																return id != booking._id;
-															}
-														);
-													currentCustomer
-														.save()
-														.then(() => {
-															res.json({
-																success:
-																	"Booking cancelled successfully",
-															});
-														})
-														.catch((err) =>
-															res.json({
-																failure: "Unable to cancel booking",
-																error: err,
-															})
-														);
-												})
-												.catch((err) =>
-													res.json({
-														failure: "Unable to cancel booking",
-														error: err,
-													})
-												);
+											res.json({
+												success: "Booking cancelled successfully",
+											});
 										})
 										.catch((err) =>
 											res.json({
@@ -259,7 +195,10 @@ router.route("/cancelBooking/:id").delete((req, res) => {
 										);
 								})
 								.catch((err) =>
-									res.json({ failure: "Unable to cancel booking", error: err })
+									res.json({
+										failure: "Unable to cancel booking",
+										error: err,
+									})
 								);
 						})
 						.catch((err) =>
