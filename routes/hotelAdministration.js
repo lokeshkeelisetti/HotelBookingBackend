@@ -106,8 +106,7 @@ router.route("/deleteRoom/:id").delete((req, res) => {
 router.route("/addReceptionist").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		receptionist = {
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
+			name: { firstName: req.body.firstName, lastName: req.body.lastName },
 			email: req.body.email,
 			password: req.body.password,
 			hotelId: req.body.hotelId,
@@ -132,7 +131,7 @@ router.route("/addReceptionist").post((req, res) => {
 // Hotel admin removes receptionist
 router.route("/removeReceptionist/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
-		HotelAdministration.findOne({ _id: req.headers.hotelAdminId, hotelId: req.headers.hotelId })
+		HotelAdministration.findOne({ _id: req.headers.hoteladminid, hotelId: req.headers.hotelid })
 			.then(() => {
 				Receptionist.findOneAndDelete({ _id: req.params.id, hotelId: req.headers.hotelId })
 					.then(() => res.json("Removed receptionist!"))
