@@ -2,12 +2,39 @@ const router = require("express").Router();
 let Hotel = require("../models/hotel.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Customer = require("../models/customer.model");
-let Receptionist = require("../models/receptionist.model") ;
+let Receptionist = require("../models/receptionist.model");
+let Maintainer = require("../models/maintainer.model");
 
 const checkLogin = (userType, userSecret) => {
 	if (userType == "maintainer" && userSecret == process.env.MAINTAINER_SECRET) return true;
 	else return false;
 };
+
+router.route("/changePassword").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Maintainer.findOne({
+			_id: req.body.maintainerId,
+			password: md5(req.body.oldPassword),
+		})
+			.then((maintainer) => {
+				maintainer.password = md5(req.body.newPassword);
+				maintainer
+					.save()
+					.then(() => res.json({ success: "Password updated successfully" }))
+					.catch((err) =>
+						res.json({
+							failure: "Unable to update password",
+							error: err,
+						})
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find user with given credentials", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
 
 router.route("/hotel").get((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {

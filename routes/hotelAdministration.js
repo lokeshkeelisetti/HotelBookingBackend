@@ -11,6 +11,32 @@ const checkLogin = (userType, userSecret) => {
 	else return false;
 };
 
+router.route("/changePassword").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		HotelAdministration.findOne({
+			_id: req.body.hotelAdminId,
+			password: md5(req.body.oldPassword),
+		})
+			.then((hotelAdmin) => {
+				hotelAdmin.password = md5(req.body.newPassword);
+				hotelAdmin
+					.save()
+					.then(() => res.json({ success: "Password updated successfully" }))
+					.catch((err) =>
+						res.json({
+							failure: "Unable to update password",
+							error: err,
+						})
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find user with given credentials", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
+
 //adds what facilities a room contains
 router.route("/addHotelType").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
