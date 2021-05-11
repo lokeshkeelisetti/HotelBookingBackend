@@ -80,12 +80,12 @@ router.route("/removeHotel/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		Hotel.findByIdAndDelete(req.params.id)
 			.then(() => {
-				HotelAdministration.findOneAndRemove({ hotelId: req.params.id })
+				HotelAdministration.remove({ hotelId: req.params.id })
 					.then(() => res.json("hotel admin and hotel deleted"))
 					.catch((err) =>
 						res.json({ failure: "Unable to delete hotel admin", error: err })
 					);
-					Receptionist.findOneAndRemove({ hotelId: req.params.id })
+				Receptionist.remove({ hotelId: req.params.id })
 					.then(() => res.json("receptionist and hotel deleted"))
 					.catch((err) =>
 						res.json({ failure: "Unable to delete hotel receptionist", error: err })
