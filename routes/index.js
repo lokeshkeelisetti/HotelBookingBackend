@@ -7,6 +7,7 @@ let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
 let Maintainer = require("../models/maintainer.model");
 let Booking = require("../models/booking.model");
+const md5 = require("md5");
 
 const checkMaintainer = (email, password, res) => {
 	Maintainer.find({ email: email })
@@ -223,7 +224,7 @@ router.route("/findHotel").get((req, res) => {
 
 router.route("/login").post((req, res) => {
 	email = req.body.email;
-	password = req.body.password;
+	password = md5(req.body.password);
 	checkCustomer(email, password, res);
 });
 
@@ -234,7 +235,7 @@ router.route("/registerCustomer").post((req, res) => {
 			lastName: req.body.lastName,
 		},
 		email: req.body.email,
-		password: req.body.password,
+		password: md5(req.body.password),
 	};
 	const newCustomer = new Customer(customer);
 
@@ -251,7 +252,7 @@ router.route("/registerMaintainer").post((req, res) => {
 			lastName: req.body.lastName,
 		},
 		email: req.body.email,
-		password: req.body.password,
+		password: md5(req.body.password),
 	};
 	const newMaintainer = new Maintainer(maintainer);
 
