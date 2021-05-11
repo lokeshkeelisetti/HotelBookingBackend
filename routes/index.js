@@ -216,10 +216,46 @@ const checkCustomer = (email, password, res) => {
 		.catch((err) => checkHotelAdmin(email, password, res));
 };
 
-router.route("/findHotel").get((req, res) => {
-	HotelRoomType.find()
-		.then((hotelRoomTypes) => res.json(hotelRoomTypes))
-		.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
+router.route("/findHotelRoomTypes").post((req, res) => {
+	HotelRoom.find()
+		.then((hotelRooms) => {
+			var i = 0;
+			var hotelTypeIds = [];
+			var k = 0;
+
+			while (hotelRooms[i]) {
+				var valid = 1;
+				var j = 0;
+
+				bookingDates = hotelRooms[i].bookingDates;
+				sd = new Date(req.body.startDate);
+				ed = new Date(req.body.endDate);
+
+				while (bookingDates[j]) {
+					bsd = new Date(bookingDates[j].startDate);
+					bed = new Date(bookingDates[j].endDate);
+					j++;
+					if ((bsd <= sd && sd <= bed) || (bsd <= ed && ed <= bed)) {
+						valid = 0;
+						break;
+					}
+				}
+
+				if (j == 0) valid = 1;
+
+				if (valid) {
+					hotelTypeIds[k] = hotelRooms[i].hotelRoomTypeId;
+					k++;
+				}
+
+				i++;
+			}
+
+			HotelRoomType.find({ _id: hotelTypeIds })
+				.then((hotelRoomTypes) => res.json(hotelRoomTypes))
+				.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
+		})
+		.catch((err) => res.json({ failure: "Unable to find rooms", error: err }));
 });
 
 router.route("/login").post((req, res) => {
