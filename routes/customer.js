@@ -4,6 +4,7 @@ let Rating = require("../models/rating.model");
 let Booking = require("../models/booking.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
+const md5 = require("md5");
 // let Hotel = require("../models/hotel.model");
 
 const checkLogin = (userType, userSecret) => {
@@ -16,6 +17,29 @@ router.route("/findHotel").get((req, res) => {
 		HotelRoomType.find()
 			.then((hotelRoomTypes) => res.json(hotelRoomTypes))
 			.catch((err) => res.json({ failure: "Unable to find room type", error: err }));
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
+
+router.route("/changePassword").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Customer.findOne({ _id: req.body.customerId, password: md5(req.body.oldPassword) })
+			.then((customer) => {
+				customer.password = md5(req.body.newPassword);
+				customer
+					.save()
+					.then(() => res.json({ success: "Password updated successfully" }))
+					.catch((err) =>
+						res.json({
+							failure: "Unable to update password",
+							error: err,
+						})
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find user with given credentials", error: err })
+			);
 	} else {
 		res.json({ failure: "Access Denied" });
 	}
@@ -185,26 +209,26 @@ router.route("/cancelBooking/:id").delete((req, res) => {
 						.then((room1) => {
 							HotelRoomType.findById(room1.hotelRoomTypeId)
 								.then((currentRoomType) => {
-									currentRoomType.bookingDates = currentRoomType.bookingDates.filter(
-										(date1) => {
+									currentRoomType.bookingDates =
+										currentRoomType.bookingDates.filter((date1) => {
 											return (
 												String(date1.startDate) !=
 													String(booking.duration.startDate) ||
 												String(date1.endDate) !=
 													String(booking.duration.endDate)
 											);
-										}
-									);
+										});
 									currentRoomType
 										.save()
 										.then(() => {
 											Customer.findById(booking.customerId)
 												.then((currentCustomer) => {
-													currentCustomer.upcomingBookingIds = currentCustomer.upcomingBookingIds.filter(
-														(id) => {
-															return id != booking._id;
-														}
-													);
+													currentCustomer.upcomingBookingIds =
+														currentCustomer.upcomingBookingIds.filter(
+															(id) => {
+																return id != booking._id;
+															}
+														);
 													currentCustomer
 														.save()
 														.then(() => {
