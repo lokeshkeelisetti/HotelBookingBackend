@@ -4,6 +4,7 @@ let Receptionist = require("../models/receptionist.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
 let Hotel = require("../models/hotel.model");
+const md5 = require("md5");
 
 const checkLogin = (userType, userSecret) => {
 	if (userType == "hotelAdministration" && userSecret == process.env.HOTELADMIN_SECRET)

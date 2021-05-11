@@ -3,6 +3,7 @@ let Hotel = require("../models/hotel.model");
 let Booking = require("../models/booking.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let Receptionist = require("../models/receptionist.model");
+const md5 = require("md5");
 
 // add RECEPTIONIST_SECRET to env file!!
 const checkLogin = (userType, userSecret) => {
