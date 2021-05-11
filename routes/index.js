@@ -1,5 +1,7 @@
 const router = require("express").Router();
 let HotelRoomType = require("../models/hotelRoomType.model");
+let HotelRoom = require("../models/hotelRoom.model");
+let Hotel = require("../models/hotel.model");
 let Customer = require("../models/customer.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Receptionist = require("../models/receptionist.model");
@@ -73,57 +75,56 @@ const checkCustomer = (email, password, res) => {
 						Booking.find({ _id: ubIds })
 							.then((bookings) => {
 								upcomingBookings = bookings;
-								res.json({
-									success: "User verified",
-									type: "customer",
-									secret: process.env.CUSTOMER_SECRET,
-									id: customer[0]._id,
-									customerDetails: customer[0],
-									pastBookings: pastBookings,
-									upcomingBookings: upcomingBookings,
-								});
+
+								Hotel.find()
+									.then((hotels) => {
+										HotelRoomType.find()
+											.then((hotelRoomTypes) => {
+												HotelRoom.find()
+													.then((hotelRooms) => {
+														res.json({
+															success: "User verified",
+															type: "customer",
+															secret: process.env.CUSTOMER_SECRET,
+															id: customer[0]._id,
+															customerDetails: customer[0],
+															pastBookings: pastBookings,
+															upcomingBookings: upcomingBookings,
+															hotels,
+															hotelRoomTypes,
+															hotelRooms,
+														});
+													})
+													.catch((err) =>
+														res.json({
+															failure:
+																"Unable to find hotel rooms' details",
+															error: err,
+														})
+													);
+											})
+											.catch((err) =>
+												res.json({
+													failure:
+														"Unable to find hotel room types' details",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to find hotels' details",
+											error: err,
+										})
+									);
 							})
-							.catch(() => {
-								upcomingBookings = [];
-								res.json({
-									success: "User verified",
-									type: "customer",
-									secret: process.env.CUSTOMER_SECRET,
-									id: customer[0]._id,
-									customerDetails: customer[0],
-									pastBookings: pastBookings,
-									upcomingBookings: upcomingBookings,
-								});
-							});
+							.catch((err) =>
+								res.json({ failure: "Unable to find customer details", error: err })
+							);
 					})
-					.catch(() => {
-						pastBookings = [];
-						Booking.find({ _id: ubIds })
-							.then((bookings) => {
-								upcomingBookings = bookings;
-								res.json({
-									success: "User verified",
-									type: "customer",
-									secret: process.env.CUSTOMER_SECRET,
-									id: customer[0]._id,
-									customerDetails: customer[0],
-									pastBookings: pastBookings,
-									upcomingBookings: upcomingBookings,
-								});
-							})
-							.catch(() => {
-								upcomingBookings = [];
-								res.json({
-									success: "User verified",
-									type: "customer",
-									secret: process.env.CUSTOMER_SECRET,
-									id: customer[0]._id,
-									customerDetails: customer[0],
-									pastBookings: pastBookings,
-									upcomingBookings: upcomingBookings,
-								});
-							});
-					});
+					.catch((err) =>
+						res.json({ failure: "Unable to find customer details", error: err })
+					);
 			}
 		})
 		.catch((err) => checkHotelAdmin(email, password, res));
