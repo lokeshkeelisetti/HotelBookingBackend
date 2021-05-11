@@ -2,7 +2,7 @@ const { app } = require('../server');
 const request = require('supertest');
 const customer = require('../models/customer.model');
 test('database should be working Create/Read', async () => {
-    await User.deleteMany({});
+    await customer.deleteMany({});
     let Customer = new customer({
         name:{firstName : 'abc', lastName : 'def',},
         email: 'abc@w.com',
