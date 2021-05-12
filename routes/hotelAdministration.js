@@ -157,10 +157,10 @@ router.route("/addReceptionist").post((req, res) => {
 // Hotel admin removes receptionist
 router.route("/removeReceptionist/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
-		HotelAdministration.findOne({ _id: req.headers.hoteladminid, hotelId: req.headers.hotelid })
+		HotelAdministration.findOne({ _id: String(req.headers.hoteladminid), hotelId: req.headers.hotelid })
 			.then(() => {
-				Receptionist.findOneAndDelete({ _id: req.params.id, hotelId: req.headers.hotelId })
-					.then(() => res.json("Removed receptionist!"))
+				Receptionist.findOneAndDelete({ _id: String(req.params.id), hotelId: req.headers.hotelid })
+					.then(() => {res.json("Removed receptionist!")})
 					.catch((err) =>
 						res.json({ failure: "Unable to remove receptionist", error: err })
 					);
