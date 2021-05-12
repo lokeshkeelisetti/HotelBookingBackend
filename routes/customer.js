@@ -5,12 +5,69 @@ let Booking = require("../models/booking.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
 const md5 = require("md5");
+const Hotel = require("../models/hotel.model");
 // let Hotel = require("../models/hotel.model");
 
 const checkLogin = (userType, userSecret) => {
 	if (userType == "customer" && userSecret == process.env.CUSTOMER_SECRET) return true;
 	else return false;
 };
+
+router.route("/myDetails").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		console.log(req.body.customerId);
+		Customer.findById(String(req.body.customerId))
+			.then((customer) => {
+				console.log(customer);
+
+				Booking.find({ customerId: String(req.body.customerId) })
+					.then((booking1) => {
+						Hotel.find()
+							.then((hotel1) => {
+								HotelRoom.find()
+									.then((hotelRoom1) => {
+										HotelRoomType.find()
+											.then((hotelType1) => {
+												res.json({
+													success: "user verified",
+													upcomingBookings: booking1,
+													pastBookings: [],
+													customerDetails: customer,
+													hotels: hotel1,
+													hotelRooms: hotelRoom1,
+													hotelRoomTypes: hotelType1,
+													type: "customer",
+													secret: process.env.CUSTOMER_SECRET,
+													id: customer._id,
+												});
+											})
+											.catch((err) =>
+												res.json({
+													failure: "Unable to find hotel room types",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to find hotel rooms",
+											error: err,
+										})
+									);
+							})
+							.catch((err) =>
+								res.json({ failure: "Unable to find hotels", error: err })
+							);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to find booking details", error: err })
+					);
+			})
+			.catch((err) => res.json({ failure: "Unable to find customer details", error: err }));
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
 
 router.route("/findHotel").get((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
