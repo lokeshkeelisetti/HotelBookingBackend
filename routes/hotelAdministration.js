@@ -15,7 +15,7 @@ const checkLogin = (userType, userSecret) => {
 router.route("/changePassword").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({
-			_id: req.body.hotelAdminId,
+			_id: req.body.id,
 			password: md5(req.body.oldPassword),
 		})
 			.then((hotelAdmin) => {
