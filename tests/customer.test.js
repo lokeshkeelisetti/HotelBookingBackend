@@ -20,7 +20,7 @@ test('database should be working Update', async () => {
 });
 
 test('database should be working (Delete)', async () => {
-    await customer.deleteOne({ email: 'ab@d.com' });
-    let result = await customer.findOne({ email: 'ab@d.com' });
+    await customer.deleteOne({ email: 'ab@w.com' });
+    let result = await customer.findOne({ email: 'ab@w.com' });
     expect(result).toBe(null);
 });
