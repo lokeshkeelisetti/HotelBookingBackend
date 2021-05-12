@@ -60,6 +60,8 @@ router.route("/bookRoom").post((req, res) => {
 				var j = 0;
 				sd = new Date(req.body.startDate);
 				ed = new Date(req.body.endDate);
+				console.log("1", sd);
+				console.log("2", ed);
 
 				while (bookingDates[j]) {
 					bsd = new Date(bookingDates[j].startDate);
@@ -82,6 +84,7 @@ router.route("/bookRoom").post((req, res) => {
 
 				if (valid) {
 					roomId = hotelRooms[i]._id;
+					i++;
 					break;
 				}
 
