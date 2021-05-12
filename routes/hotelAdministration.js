@@ -12,6 +12,67 @@ const checkLogin = (userType, userSecret) => {
 	else return false;
 };
 
+router.route("/myDetails").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		HotelAdministration.findById(String(req.body.id))
+			.then((hotelAdministration1) => {
+				Hotel.findById(hotelAdministration1.hotelId)
+					.then((hotel1) => {
+						HotelRoom.find({ hotelId: hotelAdministration1.hotelId })
+							.then((hotelRooms1) => {
+								HotelRoomType.find({
+									hotelId: hotelAdministration1.hotelId,
+								})
+									.then((hotelRoomTypes1) => {
+										Receptionist.find({
+											hotelId: hotelAdministration1.hotelId,
+										})
+											.then((receptionists1) => {
+												res.json({
+													success: "User verified",
+													type: "hotelAdministration",
+													secret: process.env.HOTELADMIN_SECRET,
+													id: hotelAdministration1._id,
+													hotelAdminDetails: hotelAdministration1,
+													hotel: hotel1,
+													hotelRooms: hotelRooms1,
+													hotelRoomTypes: hotelRoomTypes1,
+													receptionists: receptionists1,
+												});
+											})
+											.catch((err) =>
+												res.json({
+													failure: "Unable to find receptionist details",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to find hotel room type details",
+											error: err,
+										})
+									);
+							})
+							.catch((err) =>
+								res.json({
+									failure: "Unable to find hotel room details",
+									error: err,
+								})
+							);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to find hotel details", error: err })
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find hotel admin details", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
+
 router.route("/changePassword").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		HotelAdministration.findOne({
@@ -157,10 +218,18 @@ router.route("/addReceptionist").post((req, res) => {
 // Hotel admin removes receptionist
 router.route("/removeReceptionist/:id").delete((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
-		HotelAdministration.findOne({ _id: String(req.headers.hoteladminid), hotelId: req.headers.hotelid })
+		HotelAdministration.findOne({
+			_id: String(req.headers.hoteladminid),
+			hotelId: req.headers.hotelid,
+		})
 			.then(() => {
-				Receptionist.findOneAndDelete({ _id: String(req.params.id), hotelId: req.headers.hotelid })
-					.then(() => {res.json("Removed receptionist!")})
+				Receptionist.findOneAndDelete({
+					_id: String(req.params.id),
+					hotelId: req.headers.hotelid,
+				})
+					.then(() => {
+						res.json("Removed receptionist!");
+					})
 					.catch((err) =>
 						res.json({ failure: "Unable to remove receptionist", error: err })
 					);
