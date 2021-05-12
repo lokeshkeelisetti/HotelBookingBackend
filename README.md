@@ -60,7 +60,7 @@ The Backend Section is hosted at [HotelPediaBackend](http://hotelbookingbackend.
 
 This project is developed by
 
-1. [Abhinav Reddy (190001007)](https://github.com/)
+1. [Abhinav Reddy (190001007)](https://github.com/pixelbullet)
 2. [keelisetti lokesh (190001022)](https://github.com/lokeshkeelisetti)
 3. [Kushaan Gowda (190001031)](https://github.com/kushaangowda)
 4. [Nunemunthala Shiva (190001041)](https://github.com/nunemunthalashiva)
