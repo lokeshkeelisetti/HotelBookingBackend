@@ -11,6 +11,65 @@ const checkLogin = (userType, userSecret) => {
 	else return false;
 };
 
+router.route("/myDetails").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Receptionist.findById(req.body.id)
+			.then((receptionist1) => {
+				Hotel.findById(receptionist1.hotelId)
+					.then((hotel1) => {
+						HotelRoom.find({ hotelId: receptionist1.hotelId })
+							.then((hotelRooms1) => {
+								HotelRoomType.find({
+									hotelId: receptionist1.hotelId,
+								})
+									.then((hotelRoomTypes1) => {
+										Booking.find({ hotelId: receptionist1.hotelId })
+											.then((bookings1) => {
+												res.json({
+													success: "User verified",
+													type: "receptionist",
+													secret: process.env.RECEPTIONIST_SECRET,
+													id: receptionist1._id,
+													receptionistDetails: receptionist1,
+													hotel: hotel1,
+													hotelRooms: hotelRooms1,
+													hotelRoomTypes: hotelRoomTypes1,
+													bookings: bookings1,
+												});
+											})
+											.catch((err) =>
+												res.json({
+													failure: "Unable to find booking details",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to find hotel room type details",
+											error: err,
+										})
+									);
+							})
+							.catch((err) =>
+								res.json({
+									failure: "Unable to find hotel room details",
+									error: err,
+								})
+							);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to find hotel details", error: err })
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find receptionist details", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
+
 router.route("/changePassword").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		Receptionist.findOne({
