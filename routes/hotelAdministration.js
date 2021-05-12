@@ -57,7 +57,7 @@ router.route("/addHotelType").post((req, res) => {
 
 		HotelAdministration.findOne({ _id: req.body.hotelAdminId, hotelId: req.body.hotelId })
 			.then(() => {
-				Hotel.findOne(req.body.hotelId)
+				Hotel.findById(req.body.hotelId)
 					.then(() => {
 						newHotelRoomType
 							.save()
