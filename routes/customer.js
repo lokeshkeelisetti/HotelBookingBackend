@@ -15,12 +15,12 @@ const checkLogin = (userType, userSecret) => {
 
 router.route("/myDetails").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
-		console.log(req.body.customerId);
-		Customer.findById(String(req.body.customerId))
+		console.log(req.body.id);
+		Customer.findById(String(req.body.id))
 			.then((customer) => {
 				console.log(customer);
 
-				Booking.find({ customerId: String(req.body.customerId) })
+				Booking.find({ customerId: String(req.body.id) })
 					.then((booking1) => {
 						Hotel.find()
 							.then((hotel1) => {
