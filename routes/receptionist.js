@@ -96,6 +96,26 @@ router.route("/changePassword").post((req, res) => {
 	}
 });
 
+router.route("/getBookings").post((req, res) => {
+	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
+		Receptionist.findOne({ _id: req.body.receptionistId, hotelId: req.body.hotelId })
+			.then(() => {
+				Booking.find({ hotelId: req.body.hotelId, status: false })
+					.then((bookings1) => {
+						res.json(bookings1);
+					})
+					.catch((err) =>
+						res.json({ failure: "Unable to find booking details", error: err })
+					);
+			})
+			.catch((err) =>
+				res.json({ failure: "Unable to find receptionist details", error: err })
+			);
+	} else {
+		res.json({ failure: "Access Denied" });
+	}
+});
+
 //Confirm booking or update status in booking
 router.route("/updateStatus/:id").put((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
