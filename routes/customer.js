@@ -24,7 +24,10 @@ router.route("/findHotel").get((req, res) => {
 
 router.route("/changePassword").post((req, res) => {
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
-		Customer.findOne({ _id: req.body.customerId, password: md5(req.body.oldPassword) })
+		// console.log(req.body.id);
+		// console.log(req.body.oldPassword);
+		// console.log(req.body.newPassword);
+		Customer.findOne({ _id: req.body.id, password: md5(String(req.body.oldPassword)) })
 			.then((customer) => {
 				customer.password = md5(req.body.newPassword);
 				customer
