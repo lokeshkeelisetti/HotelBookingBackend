@@ -118,6 +118,8 @@ router.route("/getBookings").post((req, res) => {
 
 //Confirm booking or update status in booking
 router.route("/updateStatus/:id").put((req, res) => {
+	console.log(req.headers.usersecret);
+	console.log(req.headers.usertype);
 	if (checkLogin(req.headers.usertype, req.headers.usersecret)) {
 		Receptionist.findOne({ _id: req.body.receptionistId, hotelId: req.body.hotelId })
 			.then(() => {
