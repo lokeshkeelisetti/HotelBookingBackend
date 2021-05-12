@@ -56,7 +56,12 @@ You will also see any lint errors and warnings in the console.
 
 The Backend Section is hosted at [HotelPediaBackend](http://hotelbookingbackend.herokuapp.com/)
 
-# 5. Developers
+# 5. Documents
+
+1. [Software Requirement Sheet](Software_Requirements_Specification.pdf)
+2. [Design Document](Software_Design_Document.pdf)
+
+# 6. Developers
 
 This project is developed by
 
@@ -67,7 +72,7 @@ This project is developed by
 5. [Rohit Banga (190001053)](https://github.com/RohitBanga3)
 6. [Satya Bhagavan (190001055)](https://github.com/satyabhagavan)
 
-# 6. Feedback and Suggestions
+# 7. Feedback and Suggestions
 
 If you have any suggestions, or want to contribute:
 
