@@ -110,7 +110,7 @@ router.route("/addHotelType").post((req, res) => {
 				wifi_or_not: Boolean(Number(req.body.wifi_or_not)),
 				max_no_of_people: Number(req.body.max_no_of_people),
 			},
-			imgURLs: req.body.imgURLs || [],
+			imgURLs: [req.body.imgURLs] || [],
 			hotelId: req.body.hotelId,
 		};
 
