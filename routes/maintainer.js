@@ -1,5 +1,7 @@
 const router = require("express").Router();
 let Hotel = require("../models/hotel.model");
+let Booking = require("../models/booking.model");
+let Rating = require("../models/rating.model");
 let HotelRoom = require("../models/hotelRoom.model");
 let HotelRoomType = require("../models/hotelRoomType.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
@@ -117,11 +119,31 @@ router.route("/removeHotel/:id").delete((req, res) => {
 								HotelRoom.remove({ hotelId: req.params.id })
 									.then(() => {
 										HotelRoomType.remove({ hotelId: req.params.id })
-											.then(() =>
-												res.json({
-													success: "removeed hotel details successfully",
-												})
-											)
+											.then(() => {
+												Rating.remove({ hotelId: req.params.id })
+													.then(() => {
+														Booking.remove({ hotelId: req.params.id })
+															.then(() =>
+																res.json({
+																	success:
+																		"removed data successfully",
+																})
+															)
+															.catch((err) =>
+																res.json({
+																	failure:
+																		"unable to remove bookings",
+																	error: err,
+																})
+															);
+													})
+													.catch((err) =>
+														res.json({
+															failure: "unable to remove ratings",
+															error: err,
+														})
+													);
+											})
 											.catch((err) =>
 												res.json({
 													failure: "unable to remove hotel room type",
