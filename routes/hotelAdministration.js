@@ -251,8 +251,8 @@ router.route("/updateHotelRoomType/:id").put((req, res) => {
 						hotelRoomType.facilities.wifi_or_not = Boolean(
 							Number(req.body.wifi_or_not)
 						);
-						hotelRoomType.max_no_of_people = Number(req.body.max_no_of_people);
-						hotelRoomType.imgURLs = req.body.imgURLs;
+						hotelRoomType.facilities.max_no_of_people = Number(req.body.max_no_of_people);
+						hotelRoomType.imgURLs = [req.body.imgURLs] || [];
 						hotelRoomType
 							.save()
 							.then(() => res.json({ success: "Type of hotel room updated!" }))
