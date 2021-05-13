@@ -1,5 +1,7 @@
 const router = require("express").Router();
 let Hotel = require("../models/hotel.model");
+let HotelRoom = require("../models/hotelRoom.model");
+let HotelRoomType = require("../models/hotelRoomType.model");
 let HotelAdministration = require("../models/hotelAdministration.model");
 let Customer = require("../models/customer.model");
 let Receptionist = require("../models/receptionist.model");
@@ -109,14 +111,40 @@ router.route("/removeHotel/:id").delete((req, res) => {
 		Hotel.findByIdAndDelete(req.params.id)
 			.then(() => {
 				HotelAdministration.remove({ hotelId: req.params.id })
-					.then(() => res.json("hotel admin and hotel deleted"))
+					.then(() => {
+						Receptionist.remove({ hotelId: req.params.id })
+							.then(() => {
+								HotelRoom.remove({ hotelId: req.params.id })
+									.then(() => {
+										HotelRoomType.remove({ hotelId: req.params.id })
+											.then(() =>
+												res.json({
+													success: "removeed hotel details successfully",
+												})
+											)
+											.catch((err) =>
+												res.json({
+													failure: "unable to remove hotel room type",
+													error: err,
+												})
+											);
+									})
+									.catch((err) =>
+										res.json({
+											failure: "Unable to remove hotel room",
+											error: err,
+										})
+									);
+							})
+							.catch((err) =>
+								res.json({
+									failure: "Unable to delete hotel receptionist",
+									error: err,
+								})
+							);
+					})
 					.catch((err) =>
 						res.json({ failure: "Unable to delete hotel admin", error: err })
-					);
-				Receptionist.remove({ hotelId: req.params.id })
-					.then(() => res.json("receptionist and hotel deleted"))
-					.catch((err) =>
-						res.json({ failure: "Unable to delete hotel receptionist", error: err })
 					);
 			})
 			.catch((err) => res.json({ failure: "Unable to delete hotel", error: err }));
