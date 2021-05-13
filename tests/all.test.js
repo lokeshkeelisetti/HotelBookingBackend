@@ -7,7 +7,6 @@ const maintainer = require('../models/maintainer.model');
 const receptionist = require('../models/receptionist.model');
 test('cutomer Create/Read', async () => {
     jest.setTimeout(60000);
-    await customer.deleteMany({});
     let Customer = new customer({
         name:{firstName : 'abc', lastName : 'def',},
         email: 'abc@w.com',
@@ -33,7 +32,6 @@ test('customer (Delete)', async () => {
 });
 test('hotel Create/Read', async () => {
     jest.setTimeout(60000);
-    await hotel.deleteMany({});
     let Hotel = new hotel({
         hotelName:'abc',
 		address: {
@@ -62,7 +60,6 @@ test('hotel (Delete)', async () => {
 });
 test(' hotelAdministration Create/Read', async () => {
     jest.setTimeout(60000);
-    await hotelAdministration.deleteMany({});
     let HotelAdministration = new hotelAdministration({
         name:{firstName : 'abc', lastName : 'def',},
         email: 'xyz@w.com',
@@ -89,7 +86,6 @@ test('hotelAdministration (Delete)', async () => {
 });
 test('maintainer Create/Read', async () => {
     jest.setTimeout(60000);
-    await maintainer.deleteMany({});
     let Maintainer = new maintainer({
         name:{firstName : 'abc', lastName : 'def',},
         email: 'ijk@w.com',
@@ -115,7 +111,6 @@ test('maintainer (Delete)', async () => {
 });
 test('receptionist Create/Read', async () => {
     jest.setTimeout(60000);
-    await receptionist.deleteMany({});
     let Receptionist = new receptionist({
         name:{firstName : 'abc', lastName : 'def',},
         email: 'mno@w.com',
